@@ -18,7 +18,23 @@ export const Provider = (props) => {
         .then( response => setCourses(response.data.courses))
         .catch( error => console.error('API Fetch was unsuccessful: ', error));
     }
-    
+
+    const signIn = async(user) => {
+        const encodedCredentials = btoa(`${user.emailAddress}:${user.password}`); 
+
+        const options = {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                Authorization: `Basic ${ encodedCredentials }`
+              },
+        };
+
+        const response = await axios.get('http://localhost:5000/api/users', options);
+        const currentUser = response.data;
+
+        return currentUser;
+    }
+
     // delete course function and refetch new api
     const deleteCourse = (courseId) => {
         axios.delete(`http://localhost:5000/api/courses/${ courseId }`)
@@ -34,7 +50,8 @@ export const Provider = (props) => {
         <CourseContext.Provider value={{ 
             courses: courses,
             action: {
-                deleteCourse: deleteCourse
+                deleteCourse: deleteCourse,
+                signIn: signIn
             } 
         }} >
             { props.children }

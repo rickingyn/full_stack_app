@@ -20,7 +20,7 @@ const Routers = () => {
             {/* pass route props to CourseDetail Component */}
             <Route exact path='/courses/:id' render={ (routeProps) => <CourseDetail { ...routeProps } /> } /> 
             <Route exact path='/courses/:id/update' render={ () => <UpdateCourse /> } />
-            <Route path='/signin' render={ () => <UserSignIn /> } />
+            <Route path='/signin' render={ (routeProps) => <UserSignIn { ...routeProps } /> } />
             <Route path='/signup' render={ () => <UserSignUp /> } />
             <Route path='/signout' render={ () => <UserSignOut /> } />
             <Redirect to='/' />

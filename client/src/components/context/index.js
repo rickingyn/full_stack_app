@@ -20,7 +20,7 @@ export const Provider = (props) => {
     }
 
     // function to make API call to users GET route; return user if credentials matches
-    const signIn = async(user) => {
+    const getUser = async(user) => {
         // encode emailaddress and passsword passed from parameter
         const encodedCredentials = btoa(`${user.emailAddress}:${user.password}`); 
 
@@ -46,6 +46,19 @@ export const Provider = (props) => {
         }
     }
 
+    // function to make API call to users POST route to add user
+    const createUser = async(user) => {
+        try {
+            await axios.post('http://localhost:5000/api/users', user);
+
+            return [];
+        } catch(error) {
+            if(error.response.status === 400) {
+                return error.response.data.errors;
+            }
+        }
+    }
+
     // delete course function and refetch new api
     const deleteCourse = (courseId) => {
         axios.delete(`http://localhost:5000/api/courses/${ courseId }`)
@@ -62,7 +75,8 @@ export const Provider = (props) => {
             courses: courses,
             action: {
                 deleteCourse: deleteCourse,
-                signIn: signIn
+                getUser: getUser,
+                createUser: createUser
             } 
         }} >
             { props.children }

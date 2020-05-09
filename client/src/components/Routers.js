@@ -14,14 +14,14 @@ import UserSignOut from './UserSignOut';
     // Redirecdt to home page if no route matches
 const Routers = () => {
     return(
+        // use { ...routeProps } to pass route properties to component
         <Switch>
             <Route exact path='/' render={ () => <Courses /> } />
             <Route exact path='/courses/create' render={ () => <CreateCourse /> } />
-            {/* pass route props to CourseDetail Component */}
             <Route exact path='/courses/:id' render={ (routeProps) => <CourseDetail { ...routeProps } /> } /> 
             <Route exact path='/courses/:id/update' render={ () => <UpdateCourse /> } />
             <Route path='/signin' render={ (routeProps) => <UserSignIn { ...routeProps } /> } />
-            <Route path='/signup' render={ () => <UserSignUp /> } />
+            <Route path='/signup' render={ (routeProps) => <UserSignUp { ...routeProps } /> } />
             <Route path='/signout' render={ () => <UserSignOut /> } />
             <Redirect to='/' />
         </Switch>

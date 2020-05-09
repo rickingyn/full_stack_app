@@ -29,10 +29,15 @@ export const Provider = (props) => {
               },
         };
 
-        const response = await axios.get('http://localhost:5000/api/users', options);
-        const currentUser = response.data;
+        try {
+            const response = await axios.get('http://localhost:5000/api/users', options);
+            const currentUser = response.data;
 
-        return currentUser;
+            return currentUser;
+        } catch(error) {
+            console.error('An error has occured retreiving the user: ', error);
+            return null;
+        }
     }
 
     // delete course function and refetch new api

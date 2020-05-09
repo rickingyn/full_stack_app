@@ -23,25 +23,27 @@ function UserSignIn(props) {
                 }
 
                 // prevent page refresh and call function from context to sign in; pass in user object as parameter
+                // call signIn action from context API; set error state if login unsuccessful else redirect to root url
                 const handleSubmit = (event) => {
                     event.preventDefault();
                     action.signIn(user)
                         .then( user => {
                             if( user === null ) {
-                                setError('Sign-In was unsuccessful');
+                                setError('Sign-In was unsuccessful. Email Address or password does not match.');
                             } else {
                                 props.history.push('/');
                             }
                         });
                 }
-
+                
+            
                 return(
                     <div className='bounds'>
                         <div className='grid-33 centered signin'>
                             <h1>Sign In</h1>
-                            { error ? <p>there was an error</p>
-                                :
-                            (<div>
+                            {/* display unsuccessful login message if user GET route is not successful */}
+                            { error && <p>{ error }</p>}
+                                
                             <div>
                                 <form onSubmit={ handleSubmit } >
                                     {/* set value equel to state and update state on change */}
@@ -58,9 +60,8 @@ function UserSignIn(props) {
                             <p>&nbsp;</p>
                             <p>Don't have a user account? <Link to='/signup'>Click here</Link> to sign up!</p>
 
-                            </div>)
                                 
-                            }
+                        
                         </div>
                     </div>
                 );

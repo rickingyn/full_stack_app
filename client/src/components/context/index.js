@@ -19,9 +19,13 @@ export const Provider = (props) => {
         .catch( error => console.error('API Fetch was unsuccessful: ', error));
     }
 
+    // function to make API call to users GET route; return user if credentials matches
     const signIn = async(user) => {
+        // encode emailaddress and passsword passed from parameter
         const encodedCredentials = btoa(`${user.emailAddress}:${user.password}`); 
 
+        // create options object to pass as header in GET method
+            // passes encoded credentials as basic authorization
         const options = {
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
@@ -29,6 +33,8 @@ export const Provider = (props) => {
               },
         };
 
+        // make API fetch to users GET route and pass options as 2nd parameter
+            // if successful, return user; else return null;
         try {
             const response = await axios.get('http://localhost:5000/api/users', options);
             const currentUser = response.data;

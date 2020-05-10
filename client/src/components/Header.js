@@ -19,7 +19,7 @@ const Header = () => {
                             */}
                             { authenticatedUser ? 
                                 <nav>
-                                    <span>Welcome { authenticatedUser.firstName } { authenticatedUser.lastName }!</span>
+                                    <span>Welcome { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }!</span>
                                     <Link className='signout' to='/signout'>Sign Out</Link>
                                 </nav>
                                     : 

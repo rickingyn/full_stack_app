@@ -32,17 +32,18 @@ const CreateCourse = (props) => {
                     event.preventDefault();
                     
                     if (authenticatedUser) {
+                        console.log(authenticatedUser)
                         let currentUser = {
-                            emailAddress: currentUser.emailAddress,
-                            password: currentUser.password
+                            emailAddress: authenticatedUser.userAuthentication.emailAddress,
+                            password: authenticatedUser.userAuthentication.password
                         };
 
-                        action.createCourse(course);
+                        action.createCourse(course, currentUser);
                     } else {
                         setValidationError('Please sign into create a course');
                     }
                 }
-
+                console.log(authenticatedUser)
                 return(
                     <div className='bounds course--detail'>
                         <h1>Create Course</h1>
@@ -50,7 +51,7 @@ const CreateCourse = (props) => {
                         {/* validation error here */}
                         { validationError && 
                             <div>
-                                <h2 class="validation--errors--label">Validation errors</h2>
+                                <h2 className="validation--errors--label">Validation errors</h2>
                                 <div className='validation-errors'>
                                     <ul>
                                         <li>{ validationError }</li>
@@ -65,7 +66,7 @@ const CreateCourse = (props) => {
                                 <div className='course--header'>
                                     <h4 className='course--label'>Course</h4>
                                     <div><input  className='input-title course--title--input' type='text' name='title' placeholder='Course title...' value={ course.title } onChange={ handleUpdate }/></div>
-                                    <p>By</p>
+                                    <p>By { authenticatedUser.user.firstName }</p>
                                 </div>
                                 
                                 <div className='course--description'>

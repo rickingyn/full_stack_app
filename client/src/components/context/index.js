@@ -39,6 +39,9 @@ export const Provider = (props) => {
             const response = await axios.get('http://localhost:5000/api/users', options);
             const currentUser = response.data;
 
+            // set authenticatedUser state to user signed in
+            setAuthenticatedUser(currentUser.user)
+
             return currentUser;
         } catch(error) {
             console.error('An error has occured retreiving the user: ', error);
@@ -83,13 +86,15 @@ export const Provider = (props) => {
             .catch( error => console.error('An error occured while deleting the course: ', error) );
     }
 
-    // set courses state using React hooks
+    // set states using React hooks
     const [courses, setCourses] = useState([]);
+    const [ authenticatedUser, setAuthenticatedUser ] = useState(null);
 
     // pass courses state to Provider component
     return(
         <CourseContext.Provider value={{ 
             courses: courses,
+            authenticatedUser: authenticatedUser,
             action: {
                 getUser: getUser,
                 createUser: createUser,

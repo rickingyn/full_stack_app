@@ -17,7 +17,7 @@ const Routers = () => {
         // use { ...routeProps } to pass route properties to component
         <Switch>
             <Route exact path='/' render={ () => <Courses /> } />
-            <Route exact path='/courses/create' render={ () => <CreateCourse /> } />
+            <Route exact path='/courses/create' render={ (routeProps) => <CreateCourse { ...routeProps } /> } />
             <Route exact path='/courses/:id' render={ (routeProps) => <CourseDetail { ...routeProps } /> } /> 
             <Route exact path='/courses/:id/update' render={ () => <UpdateCourse /> } />
             <Route path='/signin' render={ (routeProps) => <UserSignIn { ...routeProps } /> } />

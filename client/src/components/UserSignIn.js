@@ -6,22 +6,22 @@ function UserSignIn(props) {
     const [ user, setUser ] = useState({ emailAddress: 'joe@smith.com', password: 'joepassword' });
     const [ error, setError ] = useState();
 
+    // function cancels page refresh and redirects to root url
+    const handleCancel = (event) => {
+        event.preventDefault();
+        props.history.push('/');
+    }
+
+    // use React hooks to set state of user to values from form
+    const handleUpdate = (event) => {
+        const { name, value } = event.target;   
+        setUser({ ...user, [name]: value });
+    }
+
     // render form sign in template
     return(
         <Consumer>   
             { ({ action }) => {
-                // function cancels page refresh and redirects to root url
-                const handleCancel = (event) => {
-                    event.preventDefault();
-                    props.history.push('/');
-                }
-
-                // use React hooks to set state of user to values from form
-                const handleUpdate = (event) => {
-                    const { name, value } = event.target;   
-                    setUser({ ...user, [name]: value });
-                }
-
                 // prevent page refresh and call function from context to sign in; pass in user object as parameter
                 // call signIn action from context API; set error state if login unsuccessful else redirect to root url
                 const handleSubmit = (event) => {

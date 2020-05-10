@@ -80,9 +80,11 @@ const UserSignUp = (props) => {
                             {/* display validation message if there are any */}
                             { validationMessages.length > 0 
                                 && 
-                                validationMessages.map( validationMessage => (
-                                    <p>{ validationMessage }</p>
-                                ))
+                                <ul>
+                                    {validationMessages.map( (validationMessage, index) => (
+                                            <li key={ index }>{ validationMessage }</li>
+                                    ))}
+                                </ul>
                             }
     
                             {/* input value is set to state and state is updated to value on change */}

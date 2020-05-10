@@ -19,7 +19,7 @@ export const Provider = (props) => {
         .catch( error => console.error('API Fetch was unsuccessful: ', error));
     }
 
-    // function to make API call to users GET route; return user if credentials matches
+    // GET request to /api/users to users; return user if credentials matches
     const getUser = async(user) => {
         // encode emailaddress and passsword passed from parameter
         const encodedCredentials = btoa(`${user.emailAddress}:${user.password}`); 
@@ -46,20 +46,37 @@ export const Provider = (props) => {
         }
     }
 
-    // function to make API call to users POST route to add user
+    // POST request to /api/users to add new user
     const createUser = async(user) => {
         try {
+            // return an empty array if user is created
             await axios.post('http://localhost:5000/api/users', user);
-
             return [];
         } catch(error) {
+            // pass array of errors if status 400 is returned
             if(error.response.status === 400) {
                 return error.response.data.errors;
+            } else {
+                throw new Error();
             }
         }
     }
 
-    // delete course function and refetch new api
+    // POST request to /api/courses to create new course
+    const createCourse = async(course) => {
+        try {
+            await axios.post('http://localhost:5000/api/courses', course);
+            return [];
+        } catch(error) {
+            if(error.response.status === 400) {
+                return error.response.data.errors;
+            } else {
+                throw new Error();
+            }
+        }
+    }
+
+    // DELETE request to /api/courses to delete course
     const deleteCourse = (courseId) => {
         axios.delete(`http://localhost:5000/api/courses/${ courseId }`)
             .then( fetchAPI() )
@@ -74,9 +91,10 @@ export const Provider = (props) => {
         <CourseContext.Provider value={{ 
             courses: courses,
             action: {
-                deleteCourse: deleteCourse,
                 getUser: getUser,
-                createUser: createUser
+                createUser: createUser,
+                createCourse: createCourse,
+                deleteCourse: deleteCourse
             } 
         }} >
             { props.children }

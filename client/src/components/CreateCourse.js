@@ -10,6 +10,8 @@ const CreateCourse = (props) => {
         materialsNeeded: ''
     });
 
+    const [ validationError, setValidationError ] = useState();
+
     // prevent page refresh and redirect to root url
     const handleCancel = (event) => {
         event.preventDefault();
@@ -24,19 +26,38 @@ const CreateCourse = (props) => {
 
     return(
         <Consumer>
-            { ({ action, courses }) => {
+            { ({ action, authenticatedUser }) => {
+
                 const handleSubmit = (event) => {
                     event.preventDefault();
                     
-                }
+                    if (authenticatedUser) {
+                        let currentUser = {
+                            emailAddress: currentUser.emailAddress,
+                            password: currentUser.password
+                        };
 
-                console.log(props)
+                        action.createCourse(course);
+                    } else {
+                        setValidationError('Please sign into create a course');
+                    }
+                }
 
                 return(
                     <div className='bounds course--detail'>
                         <h1>Create Course</h1>
                         
                         {/* validation error here */}
+                        { validationError && 
+                            <div>
+                                <h2 class="validation--errors--label">Validation errors</h2>
+                                <div className='validation-errors'>
+                                    <ul>
+                                        <li>{ validationError }</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
 
                         {/* render form for new course */}
                         <form onSubmit={ handleSubmit }>

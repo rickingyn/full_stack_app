@@ -37,10 +37,10 @@ export const Provider = (props) => {
             // if successful, return user; else return null;
         try {
             const response = await axios.get('http://localhost:5000/api/users', options);
-            const currentUser = response.data;
+            const currentUser = response.data.user;
 
             // set authenticatedUser state to user signed in
-            setAuthenticatedUser(currentUser.user)
+            setAuthenticatedUser(currentUser)
 
             return currentUser;
         } catch(error) {

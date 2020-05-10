@@ -41,7 +41,16 @@ function UserSignIn(props) {
                         <div className='grid-33 centered signin'>
                             <h1>Sign In</h1>
                             {/* display unsuccessful login message if user GET route is not successful */}
-                            { error && <p>{ error }</p>}
+                            { error && 
+                            <div>
+                                <h2 className="validation--errors--label">Validation errors</h2>
+                                
+                                <div className='validation-errors'>
+                                    <ul>
+                                        <li>{ error }</li>}
+                                    </ul>
+                                </div>
+                            </div> }
                                 
                             <div>
                                 <form onSubmit={ handleSubmit } >

@@ -75,6 +75,11 @@ export const Provider = (props) => {
         }
     }
 
+    // function to sign user out
+    const signOut = () => {
+        setAuthenticatedUser(null);
+    }
+
     // POST request to /api/courses to create new course
     const createCourse = async(course, currentUser) => {
         const encodedCredentials = btoa(`${ currentUser.emailAddress }:${ currentUser.password }`); 
@@ -152,11 +157,12 @@ export const Provider = (props) => {
             courses: courses,
             authenticatedUser: authenticatedUser,
             action: {
-                getUser: getUser,
-                createUser: createUser,
-                createCourse: createCourse,
-                updateCourse: updateCourse,
-                deleteCourse: deleteCourse
+                getUser,
+                createUser,
+                signOut,
+                createCourse,
+                updateCourse,
+                deleteCourse
             } 
         }} >
             { props.children }

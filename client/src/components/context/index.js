@@ -22,7 +22,7 @@ export const Provider = (props) => {
             const response = await axios.get('http://localhost:5000/api/courses');
             setCourses(response.data.courses);
         } catch(error) {
-            console.error('API Fetch was unsuccessful: ', error);
+            console.error('Unsuccessful retrieving list of courses: ', error);
         }
     }
 

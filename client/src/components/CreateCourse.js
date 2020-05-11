@@ -7,10 +7,11 @@ const CreateCourse = (props) => {
         title: '',
         description: '',
         estimatedTime: '',
-        materialsNeeded: ''
+        materialsNeeded: '',
+        userId: ''
     });
 
-    const [ validationError, setValidationError ] = useState();
+    const [ validationErrors, setValidationErrors ] = useState([]);
 
     // prevent page refresh and redirect to root url
     const handleCancel = (event) => {
@@ -18,43 +19,71 @@ const CreateCourse = (props) => {
         props.history.push('/');
     }
 
-    // update properties of course state to value from form
-    const handleUpdate = (event) => {
-        const { name, value } = event.target;
-        setCourse({ ...course, [name]: value});
-    }
-
     return(
         <Consumer>
             { ({ action, authenticatedUser }) => {
+                // update properties of course state to value from form
+                // update userId to id from authenticatedUser context
+                const handleUpdate = (event) => {
+                    const { name, value } = event.target;
+                    setCourse({ 
+                        ...course, 
+                        [name]: value,
+                        userId: authenticatedUser.user.id
+                    });
+                 }
 
+                // prevent page refresh and set currentUser variable to object with authentications from context
+                // call createCourse function from context and pass course state and currentUser for authentication
+                 // if user is not authenticated, return validation message
+                 // return validation message if validation error from API call
                 const handleSubmit = (event) => {
                     event.preventDefault();
                     
                     if (authenticatedUser) {
-                        console.log(authenticatedUser)
                         let currentUser = {
                             emailAddress: authenticatedUser.userAuthentication.emailAddress,
                             password: authenticatedUser.userAuthentication.password
                         };
+     
+                        action.createCourse(course, currentUser)
+                            .then( errors => {
+                                    //if array of errors are returned, set validationErrors array of validation errors
+                                    if(errors.length > 0) {
+                                        // create variable to build array of errors to pass to validationMessages
+                                        let apiValidationErrors = [];
 
-                        action.createCourse(course, currentUser);
+                                        errors.map( error => {
+                                            console.log(error)
+
+                                            if( !validationErrors.find( validationError => validationError == error ) ) {
+                                                apiValidationErrors.push(error);
+                                            }
+                                        });
+                                        setValidationErrors(apiValidationErrors);
+                                    } else {
+                                        props.history.push('/');
+                                    }
+                                })
+                                .catch( error => console.log(error));
                     } else {
-                        setValidationError('Please sign into create a course');
+                        setValidationErrors(['Please sign into create a course']);
                     }
                 }
-                console.log(authenticatedUser)
+
                 return(
                     <div className='bounds course--detail'>
                         <h1>Create Course</h1>
                         
-                        {/* validation error here */}
-                        { validationError && 
+                        {/* Display validation error if validationErrors state is not empty */}
+                        { validationErrors.length > 0 && 
                             <div>
                                 <h2 className="validation--errors--label">Validation errors</h2>
                                 <div className='validation-errors'>
                                     <ul>
-                                        <li>{ validationError }</li>
+                                        { validationErrors.map( validationError => (
+                                            <li>{ validationError }</li>
+                                        ) ) }
                                     </ul>
                                 </div>
                             </div>
@@ -66,7 +95,7 @@ const CreateCourse = (props) => {
                                 <div className='course--header'>
                                     <h4 className='course--label'>Course</h4>
                                     <div><input  className='input-title course--title--input' type='text' name='title' placeholder='Course title...' value={ course.title } onChange={ handleUpdate }/></div>
-                                    <p>By { authenticatedUser.user.firstName }</p>
+                                    <p>By { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }</p>
                                 </div>
                                 
                                 <div className='course--description'>

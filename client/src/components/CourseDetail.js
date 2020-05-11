@@ -82,8 +82,7 @@ const CourseDetail = (props) => {
                                 </div>
             
                                 <div className='course--description'>
-                                    <p><ReactMarkdown source={ course.description } /></p>
-            
+                                    <ReactMarkdown source={ course.description } />
                                 </div>
                             </div>
             

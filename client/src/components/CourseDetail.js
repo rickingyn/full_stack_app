@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown'; 
 import { Consumer } from './context'; // import Consumers Component from Context API
 import '../stylesheets/styles.css';
 
@@ -81,7 +82,7 @@ const CourseDetail = (props) => {
                                 </div>
             
                                 <div className='course--description'>
-                                    <p>{ course.description }</p>
+                                    <p><ReactMarkdown source={ course.description } /></p>
             
                                 </div>
                             </div>
@@ -96,7 +97,7 @@ const CourseDetail = (props) => {
                                         <li className='course--stats--list--item'>
                                             <h4>Materials Needed</h4>
                                             <ul>
-                                                <li>{ course.materialsNeeded }</li>
+                                                <ReactMarkdown source={ course.materialsNeeded }/>
                                             </ul>
                                         </li>
                                     </ul>

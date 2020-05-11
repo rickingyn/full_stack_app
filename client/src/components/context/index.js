@@ -6,17 +6,24 @@ const CourseContext = createContext();
 
 // Create HOC Provider component to allow children components to consume context
 export const Provider = (props) => {
+    // set states using React hooks
+    const [courses, setCourses] = useState([]);
+    const [ authenticatedUser, setAuthenticatedUser ] = useState(null);
+
     // useEffect function to execute fechAPI function when the component is mounted
     useEffect( () => {
         fetchAPI();
-    }, []); // empty array as the 2nd parameter indicates to update only when the component is first mounted
-    
+    }, []); 
+
     // function to fetch API 
         // use axios to fetch api and set courses state using React hooks
-    const fetchAPI = () => {
-        axios.get('http://localhost:5000/api/courses')
-        .then( response => setCourses(response.data.courses))
-        .catch( error => console.error('API Fetch was unsuccessful: ', error));
+    const fetchAPI = async() => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/courses');
+            setCourses(response.data.courses);
+        } catch(error) {
+            console.error('API Fetch was unsuccessful: ', error);
+        }
     }
 
     // GET request to /api/users to users; return user if credentials matches
@@ -69,11 +76,31 @@ export const Provider = (props) => {
     }
 
     // POST request to /api/courses to create new course
-    const createCourse = async(course) => {
+    const createCourse = async(course, currentUser) => {
+        // encode emailaddress and passsword passed from parameter
+        const encodedCredentials = btoa(`${currentUser.emailAddress}:${currentUser.password}`); 
+
+        // create options object to pass as header in GET method
+            // passes encoded credentials as basic authorization
+        const options = {
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                Authorization: `Basic ${ encodedCredentials }`,
+              },
+        };
+
         try {
-            await axios.post('http://localhost:5000/api/courses', course);
+            // pass course object to post method to create course
+            // pass options as header to authenticate user
+            await axios.post('http://localhost:5000/api/courses', course, options);
+            
+            // fetch courses API after new course added
+            fetchAPI();
+
+            // return empty array;
             return [];
         } catch(error) {
+            // return error arrays if status is 400
             if(error.response.status === 400) {
                 return error.response.data.errors;
             } else {
@@ -88,10 +115,6 @@ export const Provider = (props) => {
             .then( fetchAPI() )
             .catch( error => console.error('An error occured while deleting the course: ', error) );
     }
-
-    // set states using React hooks
-    const [courses, setCourses] = useState([]);
-    const [ authenticatedUser, setAuthenticatedUser ] = useState(null);
 
     // pass courses state to Provider component
     return(

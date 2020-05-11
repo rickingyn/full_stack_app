@@ -1,26 +1,80 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Consumer } from './context';
 
 const UpdateCourse = (props) => {
+    // set states with React hooks
+    const [ updatedCourse, setUpdatedCourse ] = useState();
+    const [ errorMessage, setErrorMessage ] = useState();
+
     // Cancel button returns to Course Details 
     const handleCancel = (event) => {
         event.preventDefault();
         props.history.goBack();
     }
 
+
     return(
         <Consumer>
-            { ({ authenticatedUser, courses }) => {
+            { ({ action, authenticatedUser, courses }) => {
                 // find current course with course id in URL
                 const courseId = props.match.params.id;
-                const currentCourse = courses.find( course => course.id == courseId );
+                let currentCourse = courses.find( course => course.id == courseId );
+
+                // update updatedCourse state when values on form changes         
+                const handleUpdate = (event) => {
+                    const { name, value } = event.target;
+
+                    // if updatedCourse state is null, set to currentCourse
+                    if(!updatedCourse) {
+                        setUpdatedCourse(currentCourse);
+                    } else {
+                        setUpdatedCourse({ ...updatedCourse, [name]: value });
+                    }
+                }
+                
+                // submit PUT request to update course
+                    // check if user is authenticated
+                    // check if any changes was made 
+                const handleSubmit = (event) => {
+                    event.preventDefault();
+               
+                    if(authenticatedUser) {
+                        // create currentUser variable with authentication details
+                        const currentUser = {
+                            emailAddress: authenticatedUser.userAuthentication.emailAddress,
+                            password: authenticatedUser.userAuthentication.password
+                        };
+
+                        if(!updatedCourse) {
+                            setErrorMessage('No changes has been made. Course was not updated');
+                        } else {
+                            //  cation updateCourse function from context and pass course Id, updated course and user authentication
+                            action.updateCourse(courseId, updatedCourse, currentUser);
+                            props.history.push('/');
+                        }
+                    } else {
+                        setErrorMessage('Please sign in to make changes to the course');
+                    }
+                }
 
                 return(
                     <div className='bounds course--detail'>
                         <h1>Update Course</h1>
 
+                        {/* display if there iss an error message */}
+                        { errorMessage && 
+                            <div>
+                                <h2 className="validation--errors--label">Validation errors</h2>
+                                <div className='validation-errors'>
+                                    <ul>
+                                       <li>{ errorMessage }</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+
                         <div>
-                            <form>
+                            <form onSubmit={ handleSubmit } >
                                 <div className='grid-66'>
                                     <div className='course--header'>
                                         <h4 className='course--label'>Course</h4>
@@ -29,16 +83,15 @@ const UpdateCourse = (props) => {
                                             className='input-title course--title--input' 
                                             type='text' 
                                             name='title' 
-                                            value={ currentCourse.title }
-                                            placeholder='Course title...'
+                                            placeholder='title'
+                                            defaultValue={ currentCourse.title }
+                                            onChange={ handleUpdate }
                                         /></div>
                                         <p>By { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }</p>
                                     </div>
 
                                     <div className='course--description'>
-                                        <div><textarea name='description' placeholder='Course description...'>
-                                            { currentCourse.description }
-                                        </textarea></div>
+                                        <div><textarea name='description' placeholder='Course description...' defaultValue={ currentCourse.description } onChange={ handleUpdate } ></textarea></div>
                                     </div>
                                 </div>       
 
@@ -51,14 +104,14 @@ const UpdateCourse = (props) => {
                                                     className='course--time--input' 
                                                     type='text' 
                                                     name='estimatedTime'
-                                                    value={ currentCourse.estimatedTime }
+                                                    placeholder='Estimated time'
+                                                    defaultValue={ currentCourse.estimatedTime }
+                                                    onChange={ handleUpdate } 
                                                 /></div>
                                             </li>
                                             <li className='course--stats--list--item'>
                                                 <h4>Materials Needed</h4>
-                                                <div><textarea name='materialsNeeded' placeholder='List materials...'>
-                                                    { currentCourse.materialsNeeded }
-                                                </textarea></div>
+                                                <div><textarea name='materialsNeeded' placeholder='List materials...' defaultValue={ currentCourse.materialsNeeded } onChange={ handleUpdate } ></textarea></div>
                                             </li>
                                         </ul>
                                     </div>

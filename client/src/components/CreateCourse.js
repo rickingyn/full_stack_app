@@ -54,8 +54,6 @@ const CreateCourse = (props) => {
                                         let apiValidationErrors = [];
 
                                         errors.map( error => {
-                                            console.log(error)
-
                                             if( !validationErrors.find( validationError => validationError == error ) ) {
                                                 apiValidationErrors.push(error);
                                             }
@@ -67,7 +65,7 @@ const CreateCourse = (props) => {
                                 })
                                 .catch( error => console.log(error));
                     } else {
-                        setValidationErrors(['Please sign into create a course']);
+                        setValidationErrors(['Please sign in to create a course']);
                     }
                 }
 

@@ -29,7 +29,7 @@ export const Provider = (props) => {
     // GET request to /api/users to users; return user if credentials matches
     const getUser = async(user) => {
         // encode emailaddress and passsword passed from parameter
-        const encodedCredentials = btoa(`${user.emailAddress}:${user.password}`); 
+        const encodedCredentials = btoa(`${ user.emailAddress }:${ user.password }`); 
 
         // create options object to pass as header in GET method
             // passes encoded credentials as basic authorization
@@ -77,11 +77,8 @@ export const Provider = (props) => {
 
     // POST request to /api/courses to create new course
     const createCourse = async(course, currentUser) => {
-        // encode emailaddress and passsword passed from parameter
-        const encodedCredentials = btoa(`${currentUser.emailAddress}:${currentUser.password}`); 
+        const encodedCredentials = btoa(`${ currentUser.emailAddress }:${ currentUser.password }`); 
 
-        // create options object to pass as header in GET method
-            // passes encoded credentials as basic authorization
         const options = {
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
@@ -109,11 +106,44 @@ export const Provider = (props) => {
         }
     }
 
-    // DELETE request to /api/courses to delete course
-    const deleteCourse = (courseId) => {
-        axios.delete(`http://localhost:5000/api/courses/${ courseId }`)
-            .then( fetchAPI() )
-            .catch( error => console.error('An error occured while deleting the course: ', error) );
+    // PUT request to /api/courses/:id to update course
+    const updateCourse = async(courseId, updatedCourse, currentUser) => {
+        try {
+            const encodedCredentials = btoa(`${ currentUser.emailAddress }:${ currentUser.password }`);
+
+            const options = {
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    Authorization: `Basic ${ encodedCredentials }`
+                }
+            };
+
+            // PUT request, passing in Basic Authorization and updatedCourse
+           await axios.put(`http://localhost:5000/api/courses/${ courseId }`, updatedCourse, options);
+           fetchAPI();
+        } catch(error) {
+            console.error('An error occured while updating the course: ', error);
+        }
+        
+    }
+
+    // DELETE request to /api/courses/:id to delete course
+    const deleteCourse = async(courseId, currentUser) => {
+        try {
+            const encodedCredentials = btoa(`${ currentUser.emailAddress }:${ currentUser.password }`);
+
+            const options = {
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    Authorization: `Basic ${ encodedCredentials }`
+                }
+            };
+
+            await axios.delete(`http://localhost:5000/api/courses/${ courseId }`, options);
+            fetchAPI();
+            } catch(error) {
+                console.error('An error occured while deleting the course: ', error);
+        }
     }
 
     // pass courses state to Provider component
@@ -125,6 +155,7 @@ export const Provider = (props) => {
                 getUser: getUser,
                 createUser: createUser,
                 createCourse: createCourse,
+                updateCourse: updateCourse,
                 deleteCourse: deleteCourse
             } 
         }} >

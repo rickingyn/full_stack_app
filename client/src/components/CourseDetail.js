@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Consumer } from './context'; // import Consumers Component from Context API
 import '../stylesheets/styles.css';
 
 const CourseDetail = (props) => {
+    const [ deletingError, setDeletingError ] = useState();
     return(
         <Consumer>
-            { ({ courses, action }) => {
+            { ({ action, authenticatedUser, courses }) => {
                 // assign id string query in URL to courseId
                 const courseId = props.match.params.id;
 
@@ -17,8 +18,18 @@ const CourseDetail = (props) => {
                     // calls deleteCourse function from context to delete course
                     // redirects to root route
                 const handleDelete = () => {
-                    action.deleteCourse(courseId);
-                    props.history.push('/');
+                    if (authenticatedUser) {
+                        let currentUser = {
+                            emailAddress: authenticatedUser.userAuthentication.emailAddress,
+                            password: authenticatedUser.userAuthentication.password
+                        };
+    
+                        action.deleteCourse(courseId, currentUser);
+                        props.history.push('/');
+                    } else {
+                        setDeletingError(['Please sign in to delete a course']);
+                    }
+
                 }
                 
                 // render Course Detail template
@@ -35,6 +46,18 @@ const CourseDetail = (props) => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* display message if user is not signed in and is trying to delete a course */}
+                        { deletingError && 
+                            <div>
+                                <h2 className="validation--errors--label">Error</h2>
+                                <div className='validation-errors'>
+                                    <ul>
+                                        <li>{ deletingError }</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
             
                         <div className='bounds course--detail'>
                             <div className='grid-66'>

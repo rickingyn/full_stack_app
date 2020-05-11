@@ -60,10 +60,17 @@ const UserSignUp = (props) => {
                                             validationErrors.push(error);
                                         }
                                     });
-
                                     setValidationMessages(validationErrors);
                                 } else {
-                                    props.history.push('/');
+                                    {/* sign in after creating an account and redirect to home page */}
+                                    action.getUser({ 
+                                        emailAddress: user.emailAddress, 
+                                        password: user.password
+                                    } )
+                                        .then( () => {
+                                            props.history.push('/');
+                                        })
+                                        .catch( error => console.error('An error has occured signing in after signing up: ', error) );
                                 }
                             })
                             .catch( error => console.log(error));

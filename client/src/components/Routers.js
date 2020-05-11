@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 // import components
+import PrivateRoute from './PrivateRoute';
 import Courses from './Courses';
 import CreateCourse from './CreateCourse';
 import UpdateCourse from './UpdateCourse';
@@ -15,11 +16,12 @@ import UserSignOut from './UserSignOut';
 const Routers = () => {
     return(
         // use { ...routeProps } to pass route properties to component
+        // Render PrivateRoute for URLs that require users to log in to visit
         <Switch>
             <Route exact path='/' render={ () => <Courses /> } />
-            <Route exact path='/courses/create' render={ (routeProps) => <CreateCourse { ...routeProps } /> } />
+            <PrivateRoute exact path='/courses/create' component={ CreateCourse } /> 
             <Route exact path='/courses/:id' render={ (routeProps) => <CourseDetail { ...routeProps } /> } /> 
-            <Route exact path='/courses/:id/update' render={ (routeProps) => <UpdateCourse { ...routeProps } /> } />
+            <PrivateRoute exact path='/courses/:id/update' component={ UpdateCourse } />
             <Route path='/signin' render={ (routeProps) => <UserSignIn { ...routeProps } /> } />
             <Route path='/signup' render={ (routeProps) => <UserSignUp { ...routeProps } /> } />
             <Route path='/signout' render={ () => <UserSignOut /> } />

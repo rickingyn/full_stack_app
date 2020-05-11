@@ -154,8 +154,8 @@ export const Provider = (props) => {
     // pass courses state to Provider component
     return(
         <CourseContext.Provider value={{ 
-            courses: courses,
-            authenticatedUser: authenticatedUser,
+            courses,
+            authenticatedUser,
             action: {
                 getUser,
                 createUser,

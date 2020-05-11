@@ -14,6 +14,16 @@ const CourseDetail = (props) => {
                 // use find() method to find courses from context using courseId
                 const course = courses.find( course => course.id == courseId );
 
+                // create variable to check if user can update and delete course
+                let userOwnsCourse;
+                if(authenticatedUser) {
+                    if(authenticatedUser.user.id == course.user.id) {
+                        userOwnsCourse = true;
+                    } else {
+                        userOwnsCourse = false;
+                    }
+                }
+                
                 // function to handle delete;
                     // calls deleteCourse function from context to delete course
                     // redirects to root route
@@ -23,7 +33,7 @@ const CourseDetail = (props) => {
                             emailAddress: authenticatedUser.userAuthentication.emailAddress,
                             password: authenticatedUser.userAuthentication.password
                         };
-    
+
                         action.deleteCourse(courseId, currentUser);
                         props.history.push('/');
                     } else {
@@ -38,10 +48,13 @@ const CourseDetail = (props) => {
                         <div className='actions--bar'>
                             <div className='bounds'>
                                 <div className='grid-100'>
-                                    <span>
-                                        <Link className='button' to={ `/courses/${ props.match.params.id }/update` }>Update Course</Link>
-                                        <button className='button' onClick={ handleDelete } >Delete Course</button>
-                                    </span>
+                                    {/* display Update and Delete button only if user owns course  */}
+                                    { userOwnsCourse && 
+                                        <span>
+                                            <Link className='button' to={ `/courses/${ props.match.params.id }/update` }>Update Course</Link>
+                                            <button className='button' onClick={ handleDelete } >Delete Course</button>
+                                        </span>
+                                    }
                                     <Link className='button button-secondary' to='/'>Return to List</Link>
                                 </div>
                             </div>

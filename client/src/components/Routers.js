@@ -19,7 +19,7 @@ const Routers = () => {
             <Route exact path='/' render={ () => <Courses /> } />
             <Route exact path='/courses/create' render={ (routeProps) => <CreateCourse { ...routeProps } /> } />
             <Route exact path='/courses/:id' render={ (routeProps) => <CourseDetail { ...routeProps } /> } /> 
-            <Route exact path='/courses/:id/update' render={ () => <UpdateCourse /> } />
+            <Route exact path='/courses/:id/update' render={ (routeProps) => <UpdateCourse { ...routeProps } /> } />
             <Route path='/signin' render={ (routeProps) => <UserSignIn { ...routeProps } /> } />
             <Route path='/signup' render={ (routeProps) => <UserSignUp { ...routeProps } /> } />
             <Route path='/signout' render={ () => <UserSignOut /> } />

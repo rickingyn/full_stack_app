@@ -50,17 +50,11 @@ const UpdateCourse = (props) => {
                     event.preventDefault();
                
                     if(authenticatedUser) {
-                        // create currentUser variable with authentication details
-                        const currentUser = {
-                            emailAddress: authenticatedUser.userAuthentication.emailAddress,
-                            password: authenticatedUser.userAuthentication.password
-                        };
-
                         if(!updatedCourse) {
                             setErrorMessage('No changes has been made. Course was not updated');
                         } else {
                             //  cation updateCourse function from context and pass course Id, updated course and user authentication
-                            action.updateCourse(courseId, updatedCourse, currentUser);
+                            action.updateCourse(courseId, updatedCourse, authenticatedUser.userAuthentication);
                             props.history.push('/');
                         }
                     } 

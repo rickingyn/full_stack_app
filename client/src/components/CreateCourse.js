@@ -41,13 +41,8 @@ const CreateCourse = (props) => {
                 const handleSubmit = (event) => {
                     event.preventDefault();
                     
-                    if (authenticatedUser) {
-                        let currentUser = {
-                            emailAddress: authenticatedUser.userAuthentication.emailAddress,
-                            password: authenticatedUser.userAuthentication.password
-                        };
-     
-                        action.createCourse(course, currentUser)
+                    if (authenticatedUser) {   
+                        action.createCourse(course, authenticatedUser.userAuthentication)
                             .then( errors => {
                                     //if array of errors are returned, set validationErrors array of validation errors
                                     if(errors.length > 0) {

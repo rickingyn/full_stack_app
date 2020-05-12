@@ -30,12 +30,7 @@ const CourseDetail = (props) => {
                     // redirects to root route
                 const handleDelete = () => {
                     if (authenticatedUser) {
-                        let currentUser = {
-                            emailAddress: authenticatedUser.userAuthentication.emailAddress,
-                            password: authenticatedUser.userAuthentication.password
-                        };
-
-                        action.deleteCourse(courseId, currentUser);
+                        action.deleteCourse(courseId, authenticatedUser.userAuthentication);
                         props.history.push('/');
                     } else {
                         setDeletingError(['Please sign in to delete a course']);

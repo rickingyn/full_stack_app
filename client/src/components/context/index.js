@@ -12,7 +12,7 @@ export const Provider = (props) => {
 
     // set authenticatedUser.user to cookie or null
     const [ authenticatedUser, setAuthenticatedUser ] = useState({
-        userAuthentication: '',
+        userAuthentication: Cookies.getJSON('encodedCredentials'),
         user: Cookies.getJSON('authenticatedUser')
     } || null);
     const [ errors, setErrors ] = useState([]);
@@ -56,17 +56,16 @@ export const Provider = (props) => {
 
             // set authenticatedUser state to object container user authentication and user information
             setAuthenticatedUser({
-                userAuthentication: user,
+                userAuthentication: encodedCredentials,
                 user: currentUser
             })
-            console.log(JSON.stringify(currentUser))
-            console.log(Cookies.getJSON('authenticatedUser'))
-
-            // Set Cookie to store signed in user 
-                // first arguement is the name of the cookie to set
-                // second arguement is the value to store (store stringified user object)
-                // third arguement sets when the cookie expires
+            
+            // Set Cookie to store signed in user and encodedCredentials
+            // first arguement is the name of the cookie to set
+            // second arguement is the value to store (store stringified user object)
+            // third arguement sets when the cookie expires
             Cookies.set('authenticatedUser', JSON.stringify(currentUser), { expires: 1 });
+            Cookies.set('encodedCredentials', JSON.stringify(encodedCredentials), { expires: 1 })
 
             return currentUser;
         } catch(error) {
@@ -98,13 +97,13 @@ export const Provider = (props) => {
     // function to sign user out
     const signOut = () => {
         setAuthenticatedUser(null);
-        Cookies.remove('authenticatedUser'); // delete coookie when signing out
+        // delete coookie when signing out
+        Cookies.remove('authenticatedUser'); 
+        Cookies.remove('authenticatedUserCredentials'); 
     }
 
     // POST request to /api/courses to create new course
-    const createCourse = async(course, currentUser) => {
-        const encodedCredentials = btoa(`${ currentUser.emailAddress }:${ currentUser.password }`); 
-
+    const createCourse = async(course, encodedCredentials) => {
         const options = {
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
@@ -133,10 +132,8 @@ export const Provider = (props) => {
     }
 
     // PUT request to /api/courses/:id to update course
-    const updateCourse = async(courseId, updatedCourse, currentUser) => {
+    const updateCourse = async(courseId, updatedCourse, encodedCredentials) => {
         try {
-            const encodedCredentials = btoa(`${ currentUser.emailAddress }:${ currentUser.password }`);
-
             const options = {
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
@@ -155,10 +152,8 @@ export const Provider = (props) => {
     }
 
     // DELETE request to /api/courses/:id to delete course
-    const deleteCourse = async(courseId, currentUser) => {
+    const deleteCourse = async(courseId, encodedCredentials) => {
         try {
-            const encodedCredentials = btoa(`${ currentUser.emailAddress }:${ currentUser.password }`);
-
             const options = {
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',

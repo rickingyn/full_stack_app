@@ -5,6 +5,8 @@ import { Consumer } from '../components/context';
 function UserSignIn(props) {
     const [ user, setUser ] = useState({ emailAddress: 'joe@smith.com', password: 'joepassword' });
     const [ error, setError ] = useState();
+    // set from variable to redirect to location from previous route or root URL
+    const { from } = props.location.state || { from: { pathname: '/' } }
 
     // function cancels page refresh and redirects to root url
     const handleCancel = (event) => {
@@ -31,7 +33,7 @@ function UserSignIn(props) {
                             if( user === null ) {
                                 setError('Sign-In was unsuccessful. Email Address or password does not match.');
                             } else {
-                                props.history.push('/');
+                                props.history.push(from); // redirect location from 'from' variable
                             }
                         });
                 }

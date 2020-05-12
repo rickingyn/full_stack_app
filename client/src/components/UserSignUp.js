@@ -63,7 +63,7 @@ const UserSignUp = (props) => {
                                     setValidationMessages(validationErrors);
                                 } else {
                                     {/* sign in after creating an account and redirect to home page */}
-                                    action.getUser({ 
+                                    action.signIn({ 
                                         emailAddress: user.emailAddress, 
                                         password: user.password
                                     } )

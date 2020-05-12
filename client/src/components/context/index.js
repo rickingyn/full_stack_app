@@ -12,10 +12,9 @@ export const Provider = (props) => {
     const [courses, setCourses] = useState([]);
 
     // set authenticatedUser.user to cookie or null
-    const [ authenticatedUser, setAuthenticatedUser ] = useState({
-        userAuthentication: Cookies.getJSON('encodedCredentials'),
-        user: Cookies.getJSON('authenticatedUser')
-    } || null);
+    const [ authenticatedUser, setAuthenticatedUser ] = useState( Cookies.getJSON('encodedCredentials') || null );
+    const [ user, setUser ] = useState( Cookies.getJSON('authenticatedUser') || null );
+
     const [ errors, setErrors ] = useState([]);
 
     // useEffect function to execute fechAPI function when the component is mounted
@@ -61,11 +60,9 @@ export const Provider = (props) => {
             const response = await axios.get('http://localhost:5000/api/users', options);
             const currentUser = response.data.user;
 
-            // set authenticatedUser state to object container user authentication and user information
-            setAuthenticatedUser({
-                userAuthentication: encodedCredentials,
-                user: currentUser
-            })
+            // set authenticatedUser and user state
+            setAuthenticatedUser(encodedCredentials);
+            setUser(currentUser);
             
             // Set Cookie to store signed in user and encodedCredentials
             // first arguement is the name of the cookie to set
@@ -104,9 +101,10 @@ export const Provider = (props) => {
     // function to sign user out
     const signOut = () => {
         setAuthenticatedUser(null);
+        setUser(null);
         // delete coookie when signing out
         Cookies.remove('authenticatedUser'); 
-        Cookies.remove('authenticatedUserCredentials'); 
+        Cookies.remove('encodedCredentials'); 
     }
 
     // POST request to /api/courses to create new course
@@ -181,6 +179,7 @@ export const Provider = (props) => {
             loading,
             courses,
             authenticatedUser,
+            user,
             errors,
             action: {
                 signIn,

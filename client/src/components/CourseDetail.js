@@ -8,7 +8,7 @@ const CourseDetail = (props) => {
     const [ deletingError, setDeletingError ] = useState();
     return(
         <Consumer>
-            { ({ action, authenticatedUser, courses, errors, loading }) => {
+            { ({ action, authenticatedUser, courses, errors, loading, user }) => {
                 // assign id string query in URL to courseId
                 const courseId = props.match.params.id;
 
@@ -20,12 +20,13 @@ const CourseDetail = (props) => {
                     // redirects to root route
                 const handleDelete = () => {
                     if (authenticatedUser) {
-                        action.deleteCourse(courseId, authenticatedUser.userAuthentication);
+                        action.deleteCourse(courseId, authenticatedUser);
                         props.history.push('/');
                     } else {
                         setDeletingError(['Please sign in to delete a course']);
                     }
                 }
+
                 // render Course Detail template if course is returned; else redirect to /notfound page 
                 return(
                     <div>
@@ -38,20 +39,34 @@ const CourseDetail = (props) => {
                                 {/* render course details */}
                                 { course ? (
                                     <div>
-                                        <div className='actions--bar'>
-                                            <div className='bounds'>
-                                                <div className='grid-100'>
-                                                    {/* display Update and Delete button only if user owns course  */}
-                                                    { authenticatedUser.user.id == course.user.id && 
-                                                        <span>
-                                                            <Link className='button' to={ `/courses/${ props.match.params.id }/update` }>Update Course</Link>
-                                                            <button className='button' onClick={ handleDelete } >Delete Course</button>
-                                                        </span>
-                                                    }
-                                                    <Link className='button button-secondary' to='/'>Return to List</Link>
+                                        { authenticatedUser ? (
+                                            <div>
+                                                <div className='actions--bar'>
+                                                    <div className='bounds'>
+                                                        <div className='grid-100'>
+                                                            {/* display Update and Delete button only if user owns course  */}
+                                                            { user.id == course.user.id && 
+                                                                <span>
+                                                                    <Link className='button' to={ `/courses/${ props.match.params.id }/update` }>Update Course</Link>
+                                                                    <button className='button' onClick={ handleDelete } >Delete Course</button>
+                                                                </span>
+                                                            }
+                                                            <Link className='button button-secondary' to='/'>Return to List</Link>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        ) : (
+                                            <div>
+                                            <div className='actions--bar'>
+                                                    <div className='bounds'>
+                                                        <div className='grid-100'>
+                                                            <Link className='button button-secondary' to='/'>Return to List</Link>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
 
                                         {/* display message if user is not signed in and is trying to delete a course */}
                                         { deletingError && 

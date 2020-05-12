@@ -7,7 +7,7 @@ import '../stylesheets/styles.css';
 const Header = () => {
     return(
         <Consumer>
-            { ( { authenticatedUser }) => {
+            { ( { user }) => {
                 return(
                     <div className='header'>
                         <div className='bounds'>
@@ -17,9 +17,10 @@ const Header = () => {
                                     display user welcome message if signed in 
                                     else display signup/sign in header 
                             */}
-                            { authenticatedUser ? 
+
+                            { user ? 
                                 <nav>
-                                    <span>Welcome { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }!</span>
+                                    <span>Welcome { user.firstName } { user.lastName }!</span>
                                     <Link className='signout' to='/signout'>Sign Out</Link>
                                 </nav>
                                     : 

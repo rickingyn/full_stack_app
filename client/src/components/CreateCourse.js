@@ -22,7 +22,7 @@ const CreateCourse = (props) => {
 
     return(
         <Consumer>
-            { ({ action, authenticatedUser, errors }) => {
+            { ({ action, authenticatedUser, errors, user }) => {
                 // update properties of course state to value from form
                 // update userId to id from authenticatedUser context
                 const handleUpdate = (event) => {
@@ -30,7 +30,7 @@ const CreateCourse = (props) => {
                     setCourse({ 
                         ...course, 
                         [name]: value,
-                        userId: authenticatedUser.user.id
+                        userId: user.id
                     });
                  }
 
@@ -42,7 +42,7 @@ const CreateCourse = (props) => {
                     event.preventDefault();
                     
                     if (authenticatedUser) {   
-                        action.createCourse(course, authenticatedUser.userAuthentication)
+                        action.createCourse(course, authenticatedUser)
                             .then( errors => {
                                     //if array of errors are returned, set validationErrors array of validation errors
                                     if(errors.length > 0) {
@@ -93,7 +93,7 @@ const CreateCourse = (props) => {
                                 <div className='course--header'>
                                     <h4 className='course--label'>Course</h4>
                                     <div><input  className='input-title course--title--input' type='text' name='title' placeholder='Course title...' value={ course.title } onChange={ handleUpdate }/></div>
-                                    <p>By { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }</p>
+                                    <p>By { user.firstName } { user.lastName }</p>
                                 </div>
                                 
                                 <div className='course--description'>

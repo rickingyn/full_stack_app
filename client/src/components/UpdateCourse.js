@@ -16,7 +16,7 @@ const UpdateCourse = (props) => {
 
     return(
         <Consumer>
-            { ({ action, authenticatedUser, courses, errors, loading }) => {
+            { ({ action, authenticatedUser, courses, errors, loading, user }) => {
                 // find current course with course id in URL
                 const courseId = props.match.params.id;
                 let currentCourse = courses.find( course => course.id == courseId );
@@ -44,7 +44,7 @@ const UpdateCourse = (props) => {
                             setErrorMessage('No changes has been made. Course was not updated');
                         } else {
                             //  cation updateCourse function from context and pass course Id, updated course and user authentication
-                            action.updateCourse(courseId, updatedCourse, authenticatedUser.userAuthentication);
+                            action.updateCourse(courseId, updatedCourse, authenticatedUser);
                             props.history.push('/');
                         }
                     } 
@@ -61,7 +61,7 @@ const UpdateCourse = (props) => {
                                     {/* render course update form */}
                                     { currentCourse ? (
                                             <div>
-                                                { authenticatedUser.user.id == currentCourse.user.id ? (
+                                                { user.id == currentCourse.user.id ? (
                                                     <div>
                                                         <h1>Update Course</h1>
 
@@ -91,7 +91,7 @@ const UpdateCourse = (props) => {
                                                                             defaultValue={ currentCourse.title }
                                                                             onChange={ handleUpdate }
                                                                         /></div>
-                                                                        <p>By { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }</p>
+                                                                        <p>By { user.firstName } { user.lastName }</p>
                                                                     </div>
 
                                                                     <div className='course--description'>

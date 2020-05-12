@@ -16,20 +16,10 @@ const UpdateCourse = (props) => {
 
     return(
         <Consumer>
-            { ({ action, authenticatedUser, courses, errors }) => {
+            { ({ action, authenticatedUser, courses, errors, loading }) => {
                 // find current course with course id in URL
                 const courseId = props.match.params.id;
                 let currentCourse = courses.find( course => course.id == courseId );
-
-                // create variable to check if user can update and delete course
-                let userOwnsCourse;
-                if(authenticatedUser) {
-                    if(authenticatedUser.user.id == currentCourse.user.id) {
-                        userOwnsCourse = true;
-                    } else {
-                        userOwnsCourse = false;
-                    }
-                }
 
                 // update updatedCourse state when values on form changes         
                 const handleUpdate = (event) => {
@@ -61,85 +51,90 @@ const UpdateCourse = (props) => {
                 }
 
                 return(
-                    <div className='bounds course--detail'>
-                        {/* redirect to error page if there is an error from the Context API */}
-                        { errors.length > 0 && <Redirect to='/error' /> }
+                    <div>
+                        { loading ? <p>Loading...</p> : (
+                            <div>
+                                {/* redirect to error page if there is an error from the Context API */}
+                                { errors.length > 0 && <Redirect to='/error' /> }
 
-                        {/* render course update form */}
-                        { currentCourse ? (
-                                <div>
-                                    { userOwnsCourse ? (
-                                        <div>
-                                            <h1>Update Course</h1>
-
-                                            {/* display if there iss an error message */}
-                                            { errorMessage && 
-                                                <div>
-                                                    <h2 className="validation--errors--label">Validation errors</h2>
-                                                    <div className='validation-errors'>
-                                                        <ul>
-                                                        <li>{ errorMessage }</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            }
-
+                                <div className='bounds course--detail'>
+                                    {/* render course update form */}
+                                    { currentCourse ? (
                                             <div>
-                                                <form onSubmit={ handleSubmit } >
-                                                    <div className='grid-66'>
-                                                        <div className='course--header'>
-                                                            <h4 className='course--label'>Course</h4>
+                                                { authenticatedUser.user.id == currentCourse.user.id ? (
+                                                    <div>
+                                                        <h1>Update Course</h1>
 
-                                                            <div><input 
-                                                                className='input-title course--title--input' 
-                                                                type='text' 
-                                                                name='title' 
-                                                                placeholder='title'
-                                                                defaultValue={ currentCourse.title }
-                                                                onChange={ handleUpdate }
-                                                            /></div>
-                                                            <p>By { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }</p>
+                                                        {/* display if there iss an error message */}
+                                                        { errorMessage && 
+                                                            <div>
+                                                                <h2 className="validation--errors--label">Validation errors</h2>
+                                                                <div className='validation-errors'>
+                                                                    <ul>
+                                                                    <li>{ errorMessage }</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+                                                        <div>
+                                                            <form onSubmit={ handleSubmit } >
+                                                                <div className='grid-66'>
+                                                                    <div className='course--header'>
+                                                                        <h4 className='course--label'>Course</h4>
+
+                                                                        <div><input 
+                                                                            className='input-title course--title--input' 
+                                                                            type='text' 
+                                                                            name='title' 
+                                                                            placeholder='title'
+                                                                            defaultValue={ currentCourse.title }
+                                                                            onChange={ handleUpdate }
+                                                                        /></div>
+                                                                        <p>By { authenticatedUser.user.firstName } { authenticatedUser.user.lastName }</p>
+                                                                    </div>
+
+                                                                    <div className='course--description'>
+                                                                        <div><textarea name='description' placeholder='Course description...' defaultValue={ currentCourse.description } onChange={ handleUpdate } ></textarea></div>
+                                                                    </div>
+                                                                </div>       
+
+                                                                <div className='grid-25 grid-right'>
+                                                                    <div className='course--stats'>
+                                                                        <ul className='course--stats--list'>
+                                                                            <li className='course--stats--list--item'>
+                                                                                <h4>Estimated Time</h4>
+                                                                                <div><input 
+                                                                                    className='course--time--input' 
+                                                                                    type='text' 
+                                                                                    name='estimatedTime'
+                                                                                    placeholder='Estimated time'
+                                                                                    defaultValue={ currentCourse.estimatedTime }
+                                                                                    onChange={ handleUpdate } 
+                                                                                /></div>
+                                                                            </li>
+                                                                            <li className='course--stats--list--item'>
+                                                                                <h4>Materials Needed</h4>
+                                                                                <div><textarea name='materialsNeeded' placeholder='List materials...' defaultValue={ currentCourse.materialsNeeded } onChange={ handleUpdate } ></textarea></div>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div> 
+
+                                                                <div className='grid-100 pad-bottom'>
+                                                                    <button className='button' type='submit'>Update Course</button>
+                                                                    <button className='button button-secondary' onClick={ handleCancel } >Cancel</button>
+                                                                </div>
+                                                            </form>
                                                         </div>
-
-                                                        <div className='course--description'>
-                                                            <div><textarea name='description' placeholder='Course description...' defaultValue={ currentCourse.description } onChange={ handleUpdate } ></textarea></div>
-                                                        </div>
-                                                    </div>       
-
-                                                    <div className='grid-25 grid-right'>
-                                                        <div className='course--stats'>
-                                                            <ul className='course--stats--list'>
-                                                                <li className='course--stats--list--item'>
-                                                                    <h4>Estimated Time</h4>
-                                                                    <div><input 
-                                                                        className='course--time--input' 
-                                                                        type='text' 
-                                                                        name='estimatedTime'
-                                                                        placeholder='Estimated time'
-                                                                        defaultValue={ currentCourse.estimatedTime }
-                                                                        onChange={ handleUpdate } 
-                                                                    /></div>
-                                                                </li>
-                                                                <li className='course--stats--list--item'>
-                                                                    <h4>Materials Needed</h4>
-                                                                    <div><textarea name='materialsNeeded' placeholder='List materials...' defaultValue={ currentCourse.materialsNeeded } onChange={ handleUpdate } ></textarea></div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div> 
-
-                                                    <div className='grid-100 pad-bottom'>
-                                                        <button className='button' type='submit'>Update Course</button>
-                                                        <button className='button button-secondary' onClick={ handleCancel } >Cancel</button>
                                                     </div>
-                                                </form>
+                                                ) : <Redirect to='/forbidden' />}
                                             </div>
-
-                                        </div>
-                                    ) : <Redirect to='/forbidden' />}
+                                    ) : <Redirect to='/notfound' />}
                                 </div>
-                        ) : <Redirect to='/notfound' />}
-                        
+
+                            </div>
+                        )}
                     </div>
                 );
             }}

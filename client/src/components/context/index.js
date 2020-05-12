@@ -21,7 +21,6 @@ export const Provider = (props) => {
     // useEffect function to execute fechAPI function when the component is mounted
     useEffect( () => {
         fetchAPI();
-        console.log('mounted')
     }, [loading]); 
 
     // function to fetch API 
@@ -33,10 +32,8 @@ export const Provider = (props) => {
 
             if(courses) {
                 setLoading(false);
-                console.log('loaded')
             } else {
                 setLoading(true);
-                console.log('not loaded')
             }
         } catch(error) {
             console.error('Unsuccessful retrieving list of courses: ', error);
@@ -186,7 +183,6 @@ export const Provider = (props) => {
             authenticatedUser,
             errors,
             action: {
-                setLoading,
                 signIn,
                 createUser,
                 signOut,

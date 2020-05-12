@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react'; 
 import axios from 'axios';
+import Cookies from 'js-cookie'; // import JavaScript Cookie library
 
 // create Course Context to be consumed by components
 const CourseContext = createContext();
@@ -8,7 +9,12 @@ const CourseContext = createContext();
 export const Provider = (props) => {
     // set states using React hooks
     const [courses, setCourses] = useState([]);
-    const [ authenticatedUser, setAuthenticatedUser ] = useState(null);
+
+    // set authenticatedUser.user to cookie or null
+    const [ authenticatedUser, setAuthenticatedUser ] = useState({
+        userAuthentication: '',
+        user: Cookies.getJSON('authenticatedUser')
+    } || null);
     const [ errors, setErrors ] = useState([]);
 
     // useEffect function to execute fechAPI function when the component is mounted
@@ -53,6 +59,14 @@ export const Provider = (props) => {
                 userAuthentication: user,
                 user: currentUser
             })
+            console.log(JSON.stringify(currentUser))
+            console.log(Cookies.getJSON('authenticatedUser'))
+
+            // Set Cookie to store signed in user 
+                // first arguement is the name of the cookie to set
+                // second arguement is the value to store (store stringified user object)
+                // third arguement sets when the cookie expires
+            Cookies.set('authenticatedUser', JSON.stringify(currentUser), { expires: 1 });
 
             return currentUser;
         } catch(error) {
@@ -84,6 +98,7 @@ export const Provider = (props) => {
     // function to sign user out
     const signOut = () => {
         setAuthenticatedUser(null);
+        Cookies.remove('authenticatedUser'); // delete coookie when signing out
     }
 
     // POST request to /api/courses to create new course

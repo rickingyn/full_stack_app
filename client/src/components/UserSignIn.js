@@ -26,7 +26,7 @@ function UserSignIn(props) {
                 // call signIn action from context API; set error state if login unsuccessful else redirect to root url
                 const handleSubmit = (event) => {
                     event.preventDefault();
-                    action.getUser(user)
+                    action.signIn(user)
                         .then( user => {
                             if( user === null ) {
                                 setError('Sign-In was unsuccessful. Email Address or password does not match.');

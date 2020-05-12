@@ -35,7 +35,7 @@ export const Provider = (props) => {
     }
 
     // GET request to /api/users to users; return user if credentials matches
-    const getUser = async(user) => {
+    const signIn = async(user) => {
         // encode emailaddress and passsword passed from parameter
         const encodedCredentials = btoa(`${ user.emailAddress }:${ user.password }`); 
 
@@ -176,7 +176,7 @@ export const Provider = (props) => {
             authenticatedUser,
             errors,
             action: {
-                getUser,
+                signIn,
                 createUser,
                 signOut,
                 createCourse,

@@ -9,6 +9,7 @@ export const Provider = (props) => {
     // set states using React hooks
     const [courses, setCourses] = useState([]);
     const [ authenticatedUser, setAuthenticatedUser ] = useState(null);
+    const [ errors, setErrors ] = useState([]);
 
     // useEffect function to execute fechAPI function when the component is mounted
     useEffect( () => {
@@ -23,6 +24,7 @@ export const Provider = (props) => {
             setCourses(response.data.courses);
         } catch(error) {
             console.error('Unsuccessful retrieving list of courses: ', error);
+            setErrors([ ...errors, error]);
         }
     }
 
@@ -54,8 +56,12 @@ export const Provider = (props) => {
 
             return currentUser;
         } catch(error) {
-            console.error('An error has occured retreiving the user: ', error);
-            return null;
+            if(error.response.status === 401) {
+                console.error('Login was unauthorized: ', error);
+                return null;
+            } else {
+                setErrors([ ...errors, error]);
+            }
         }
     }
 
@@ -70,7 +76,7 @@ export const Provider = (props) => {
             if(error.response.status === 400) {
                 return error.response.data.errors;
             } else {
-                throw new Error();
+                setErrors([ ...errors, error]);
             }
         }
     }
@@ -106,7 +112,7 @@ export const Provider = (props) => {
             if(error.response.status === 400) {
                 return error.response.data.errors;
             } else {
-                throw new Error();
+                setErrors([ ...errors, error]);
             }
         }
     }
@@ -128,6 +134,7 @@ export const Provider = (props) => {
            fetchAPI();
         } catch(error) {
             console.error('An error occured while updating the course: ', error);
+            setErrors([ ...errors, error]);
         }
         
     }
@@ -148,6 +155,7 @@ export const Provider = (props) => {
             fetchAPI();
             } catch(error) {
                 console.error('An error occured while deleting the course: ', error);
+                setErrors([ ...errors, error]);
         }
     }
 
@@ -156,13 +164,14 @@ export const Provider = (props) => {
         <CourseContext.Provider value={{ 
             courses,
             authenticatedUser,
+            errors,
             action: {
                 getUser,
                 createUser,
                 signOut,
                 createCourse,
                 updateCourse,
-                deleteCourse
+                deleteCourse,
             } 
         }} >
             { props.children }

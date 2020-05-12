@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link, Redirect } from 'react-router-dom'; 
 import { Consumer } from './context'; // import Consumer component to subscribe to Context API
 import '../stylesheets/styles.css'; 
 
@@ -12,9 +12,13 @@ function Courses() {
                     - map over courses and create list of courses 
             */}
             <Consumer>
-                { ({ courses }) => {
+                { ({ courses, errors }) => {
                     return(
                         <div className='bounds'>
+                            {/* redirect to error page if there is an error from the Context API */}
+                            { errors.length > 0 && <Redirect to='/error' />}
+                            
+                            {/* render list of courses */}
                             { courses.map( course => (
                                 <div key={ course.id } className='grid-33'><Link className='course--module course--link' to={ `/courses/${course.id}` }>
                                     <h4 className='course--label'>Course</h4>

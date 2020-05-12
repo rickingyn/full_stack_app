@@ -9,4 +9,4 @@ const UnhandledError = () => {
     );
 }
 
-export default UnhandleError;
+export default UnhandledError;

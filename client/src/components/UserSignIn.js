@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Consumer } from '../components/context';
 
 function UserSignIn(props) {
@@ -21,7 +21,7 @@ function UserSignIn(props) {
     // render form sign in template
     return(
         <Consumer>   
-            { ({ action }) => {
+            { ({ action, errors }) => {
                 // prevent page refresh and call function from context to sign in; pass in user object as parameter
                 // call signIn action from context API; set error state if login unsuccessful else redirect to root url
                 const handleSubmit = (event) => {
@@ -38,6 +38,10 @@ function UserSignIn(props) {
                            
                 return(
                     <div className='bounds'>
+                        {/* redirect to error page if there is an error from the Context API */}
+                        { errors.length > 0 && <Redirect to='/error' /> }
+
+                        {/* render sign in form */}
                         <div className='grid-33 centered signin'>
                             <h1>Sign In</h1>
                             {/* display unsuccessful login message if user GET route is not successful */}
@@ -47,7 +51,7 @@ function UserSignIn(props) {
                                 
                                 <div className='validation-errors'>
                                     <ul>
-                                        <li>{ error }</li>}
+                                        <li>{ error }</li>
                                     </ul>
                                 </div>
                             </div> }

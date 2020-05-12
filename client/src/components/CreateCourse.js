@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Consumer } from './context';
 
 const CreateCourse = (props) => {
@@ -21,7 +22,7 @@ const CreateCourse = (props) => {
 
     return(
         <Consumer>
-            { ({ action, authenticatedUser }) => {
+            { ({ action, authenticatedUser, errors }) => {
                 // update properties of course state to value from form
                 // update userId to id from authenticatedUser context
                 const handleUpdate = (event) => {
@@ -71,6 +72,10 @@ const CreateCourse = (props) => {
 
                 return(
                     <div className='bounds course--detail'>
+                        {/* redirect to error page if there is an error from the Context API */}
+                        { errors.length > 0 && <Redirect to='/error' /> }
+                        
+                        {/* render course form to create new course */}
                         <h1>Create Course</h1>
                         
                         {/* Display validation error if validationErrors state is not empty */}

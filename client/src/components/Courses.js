@@ -12,27 +12,34 @@ function Courses() {
                     - map over courses and create list of courses 
             */}
             <Consumer>
-                { ({ courses, errors }) => {
+                { ({ courses, errors, loading }) => {
                     return(
-                        <div className='bounds'>
+                        <div>
                             {/* redirect to error page if there is an error from the Context API */}
                             { errors.length > 0 && <Redirect to='/error' />}
                             
-                            {/* render list of courses */}
-                            { courses.map( course => (
-                                <div key={ course.id } className='grid-33'><Link className='course--module course--link' to={ `/courses/${course.id}` }>
-                                    <h4 className='course--label'>Course</h4>
-                                    <h3 className='course--title'>{ course.title }</h3>
-                                </Link></div>
-                            )) }
-
-                            {/* create new course button */}
-                            <div className='grid-33'><Link className='course--module course--add--module' to='/courses/create'>
-                               <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                    viewBox="0 0 13 13" className="add">
-                                    <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>
-                                </svg>New Course</h3>
-                            </Link></div>
+                            <div className='bounds'>
+                                {/* render loading if course list is not loaded; else render course list */}
+                                { loading ? <p>Loading...</p> : (
+                                    <div>
+                                        {/* render list of courses */}
+                                        { courses.map( course => (
+                                            <div key={ course.id } className='grid-33'><Link className='course--module course--link' to={ `/courses/${course.id}` }>
+                                                <h4 className='course--label'>Course</h4>
+                                                <h3 className='course--title'>{ course.title }</h3>
+                                            </Link></div>
+                                        )) }
+                                          
+                                        {/* create new course button */}
+                                        <div className='grid-33'><Link className='course--module course--add--module' to='/courses/create'>
+                                        <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                                viewBox="0 0 13 13" className="add">
+                                                <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>
+                                            </svg>New Course</h3>
+                                        </Link></div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     );
                 }}

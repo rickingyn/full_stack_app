@@ -7,6 +7,7 @@ const CourseContext = createContext();
 
 // Create HOC Provider component to allow children components to consume context
 export const Provider = (props) => {
+    const [ loading, setLoading ] = useState(true);
     // set states using React hooks
     const [courses, setCourses] = useState([]);
 
@@ -20,7 +21,8 @@ export const Provider = (props) => {
     // useEffect function to execute fechAPI function when the component is mounted
     useEffect( () => {
         fetchAPI();
-    }, []); 
+        console.log('mounted')
+    }, [loading]); 
 
     // function to fetch API 
         // use axios to fetch api and set courses state using React hooks
@@ -28,6 +30,14 @@ export const Provider = (props) => {
         try {
             const response = await axios.get('http://localhost:5000/api/courses');
             setCourses(response.data.courses);
+
+            if(courses) {
+                setLoading(false);
+                console.log('loaded')
+            } else {
+                setLoading(true);
+                console.log('not loaded')
+            }
         } catch(error) {
             console.error('Unsuccessful retrieving list of courses: ', error);
             setErrors([ ...errors, error]);
@@ -148,7 +158,6 @@ export const Provider = (props) => {
             console.error('An error occured while updating the course: ', error);
             setErrors([ ...errors, error]);
         }
-        
     }
 
     // DELETE request to /api/courses/:id to delete course
@@ -172,10 +181,12 @@ export const Provider = (props) => {
     // pass courses state to Provider component
     return(
         <CourseContext.Provider value={{ 
+            loading,
             courses,
             authenticatedUser,
             errors,
             action: {
+                setLoading,
                 signIn,
                 createUser,
                 signOut,

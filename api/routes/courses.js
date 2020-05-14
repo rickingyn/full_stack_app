@@ -81,7 +81,7 @@ router.post('/', courseValidation, authenticateUser, asyncHandler( async( req, r
         course = await Course.create(newCourse);
         
         // set location header to URI of the course created
-        res.location(`/${ course.id }`)
+        res.location(`/api/courses/${ course.id }`)
 
         // Send 201 status and end the response
         res.status(201).end();
@@ -111,7 +111,8 @@ router.put('/:id', authenticateUser, asyncHandler( async( req, res ) => {
             include: [
                 {
                     model: User,
-                    as: 'user'
+                    as: 'user',
+                    attributes: ['id', 'firstName', 'lastName', 'emailAddress']
                 }
             ]
         });

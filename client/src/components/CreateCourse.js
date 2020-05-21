@@ -44,22 +44,28 @@ const CreateCourse = (props) => {
                     if (authenticatedUser) {   
                         action.createCourse(course, authenticatedUser)
                             .then( errors => {
-                                    //if array of errors are returned, set validationErrors array of validation errors
-                                    if(errors.length > 0) {
-                                        // create variable to build array of errors to pass to validationMessages
-                                        let apiValidationErrors = [];
+                                //if array of errors are returned, set validationErrors array of validation errors
+                                if(errors.length > 0) {
+                                    // create variable to build array of errors to pass to validationMessages
+                                    let apiValidationErrors = [];
 
-                                        errors.map( error => {
-                                            if( !validationErrors.find( validationError => validationError === error ) ) {
+                                    errors.map( error => {
+                                        if(!validationErrors.length) {
+                                            apiValidationErrors.push(error);
+                                        } else if(errors.length > validationErrors.length) {
+                                            apiValidationErrors.push(error);
+                                        } else {
+                                            if( validationErrors.includes(error) ) {
                                                 apiValidationErrors.push(error);
-                                            }
-                                        });
-                                        setValidationErrors(apiValidationErrors);
-                                    } else {
-                                        props.history.push('/');
-                                    }
-                                })
-                                .catch( error => console.log(error));
+                                            } 
+                                        }    
+                                    });
+                                    setValidationErrors(apiValidationErrors);
+                                } else {
+                                    props.history.push('/');
+                                }
+                            })
+                            .catch( error => console.log(error));
                     } else {
                         setValidationErrors(['Please sign in to create a course']);
                     }
@@ -79,8 +85,8 @@ const CreateCourse = (props) => {
                                 <h2 className="validation--errors--label">Validation errors</h2>
                                 <div className='validation-errors'>
                                     <ul>
-                                        { validationErrors.map( validationError => (
-                                            <li>{ validationError }</li>
+                                        { validationErrors.map( (validationError, index) => (
+                                            <li key={ index }>{ validationError }</li>
                                         ) ) }
                                     </ul>
                                 </div>

@@ -3,7 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie'; // import JavaScript Cookie library
 
 // create Course Context to be consumed by components
-const CourseContext = createContext();
+export const CourseContext = createContext();
 
 // Create HOC Provider component to allow children components to consume context
 export const Provider = (props) => {
@@ -20,6 +20,7 @@ export const Provider = (props) => {
     // useEffect function to execute fechAPI function when the component is mounted
     useEffect( () => {
         fetchAPI();
+    // eslint-disable-next-line
     }, [loading]); 
 
     // function to fetch API 

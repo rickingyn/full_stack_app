@@ -68,14 +68,12 @@ const UserSignUp = (props) => {
                                                 validationErrors.push(error);
                                             } 
                                         }
+
+                                        return validationErrors;
                                     });
 
-                                    
-                                    console.log(validationErrors.length)
                                     if(validationErrors.length) {
-
-                                    setValidationMessages(validationErrors);
-
+                                        setValidationMessages(validationErrors);
                                     }
 
                                 } else {

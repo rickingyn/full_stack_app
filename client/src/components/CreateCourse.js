@@ -59,6 +59,7 @@ const CreateCourse = (props) => {
                                                 apiValidationErrors.push(error);
                                             } 
                                         }    
+                                        return apiValidationErrors;
                                     });
                                     setValidationErrors(apiValidationErrors);
                                 } else {

@@ -55,12 +55,29 @@ const UserSignUp = (props) => {
                                     // create variable to build array of errors to pass to validationMessages
                                     let validationErrors = [];
 
+                                    // if validationMessages is empty, push all validation errors from API to validationMessages
+                                    // if there are more validation errors from API than validationMessages state, replace
+                                    // if there are less validation errors than validatoinMessages state, add 
                                     errors.map( error => {
-                                        if( !validationMessages.find( validationMessage => validationMessage === error ) ) {
+                                        if(!validationMessages.length) {
                                             validationErrors.push(error);
+                                        } else if(errors.length > validationMessages.length) {
+                                            validationErrors.push(error);
+                                        } else {
+                                            if( validationMessages.includes(error) ) {
+                                                validationErrors.push(error);
+                                            } 
                                         }
                                     });
+
+                                    
+                                    console.log(validationErrors.length)
+                                    if(validationErrors.length) {
+
                                     setValidationMessages(validationErrors);
+
+                                    }
+
                                 } else {
                                     {/* sign in after creating an account and redirect to home page */}
                                     action.signIn({ 

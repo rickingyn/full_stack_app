@@ -13,7 +13,7 @@ const CourseDetail = (props) => {
                 const courseId = props.match.params.id;
 
                 // use find() method to find courses from context using courseId
-                const course = courses.find( course => course.id == courseId );
+                const course = courses.find( course => course.id === Number(courseId) );
 
                 // function to handle delete;
                     // calls deleteCourse function from context to delete course
@@ -45,7 +45,7 @@ const CourseDetail = (props) => {
                                                     <div className='bounds'>
                                                         <div className='grid-100'>
                                                             {/* display Update and Delete button only if user owns course  */}
-                                                            { user.id == course.user.id && 
+                                                            { user.id === course.user.id && 
                                                                 <span>
                                                                     <Link className='button' to={ `/courses/${ props.match.params.id }/update` }>Update Course</Link>
                                                                     <button className='button' onClick={ handleDelete } >Delete Course</button>

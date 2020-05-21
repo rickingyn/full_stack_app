@@ -50,7 +50,7 @@ const CreateCourse = (props) => {
                                         let apiValidationErrors = [];
 
                                         errors.map( error => {
-                                            if( !validationErrors.find( validationError => validationError == error ) ) {
+                                            if( !validationErrors.find( validationError => validationError === error ) ) {
                                                 apiValidationErrors.push(error);
                                             }
                                         });

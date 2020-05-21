@@ -19,7 +19,7 @@ const UpdateCourse = (props) => {
             { ({ action, authenticatedUser, courses, errors, loading, user }) => {
                 // find current course with course id in URL
                 const courseId = props.match.params.id;
-                let currentCourse = courses.find( course => course.id == courseId );
+                let currentCourse = courses.find( course => course.id === Number(courseId) );
 
                 // update updatedCourse state when values on form changes         
                 const handleUpdate = (event) => {
@@ -61,7 +61,7 @@ const UpdateCourse = (props) => {
                                     {/* render course update form */}
                                     { currentCourse ? (
                                             <div>
-                                                { user.id == currentCourse.user.id ? (
+                                                { user.id === currentCourse.user.id ? (
                                                     <div>
                                                         <h1>Update Course</h1>
 

@@ -5,14 +5,13 @@ import { Consumer } from './context';
 const UpdateCourse = (props) => {
     // set states with React hooks
     const [ updatedCourse, setUpdatedCourse ] = useState();
-    const [ errorMessage, setErrorMessage ] = useState();
+    const [ errorMessages, setErrorMessages ] = useState([]);
 
     // Cancel button returns to Course Details 
     const handleCancel = (event) => {
         event.preventDefault();
         props.history.goBack();
     }
-
 
     return(
         <Consumer>
@@ -24,13 +23,14 @@ const UpdateCourse = (props) => {
                 // update updatedCourse state when values on form changes         
                 const handleUpdate = (event) => {
                     const { name, value } = event.target;
-
+                    
                     // if updatedCourse state is null, set to currentCourse
                     if(!updatedCourse) {
-                        setUpdatedCourse(currentCourse);
+                        setUpdatedCourse({ ...currentCourse, [name]: value });
                     } else {
                         setUpdatedCourse({ ...updatedCourse, [name]: value });
                     }
+                    
                 }
                 
                 // submit PUT request to update course
@@ -41,11 +41,23 @@ const UpdateCourse = (props) => {
                
                     if(authenticatedUser) {
                         if(!updatedCourse) {
-                            setErrorMessage('No changes has been made. Course was not updated');
+                            setErrorMessages(['Please add a change to make an update']);
                         } else {
-                            //  cation updateCourse function from context and pass course Id, updated course and user authentication
-                            action.updateCourse(courseId, updatedCourse, authenticatedUser);
-                            props.history.push('/');
+                            // validation errors
+                            if(updatedCourse.title === '' && updatedCourse.description === '') {
+                                setErrorMessages([
+                                    'Please provide a value for "Course"',
+                                    'Please provide a value for "Description"'
+                                ])
+                            } else if(updatedCourse.title === '' && updatedCourse.description !== '') {
+                                setErrorMessages(['Please provide a value for "Course"'])
+                            } else if(updatedCourse.description === '' && updatedCourse.title !== '') {
+                                setErrorMessages(['Please provide a value for "Description"'])
+                            } else {
+                                //  cation updateCourse function from context and pass course Id, updated course and user authentication
+                                action.updateCourse(courseId, updatedCourse, authenticatedUser)
+                                props.history.push('/');
+                            }
                         }
                     } 
                 }
@@ -66,12 +78,14 @@ const UpdateCourse = (props) => {
                                                         <h1>Update Course</h1>
 
                                                         {/* display if there iss an error message */}
-                                                        { errorMessage && 
+                                                        { errorMessages.length > 0 && 
                                                             <div>
                                                                 <h2 className="validation--errors--label">Validation errors</h2>
                                                                 <div className='validation-errors'>
                                                                     <ul>
-                                                                    <li>{ errorMessage }</li>
+                                                                        { errorMessages.map( (errorMessages, index) => (
+                                                                            <li key={ index }>{ errorMessages }</li>
+                                                                        ) ) }
                                                                     </ul>
                                                                 </div>
                                                             </div>

@@ -135,13 +135,13 @@ router.put('/:id', authenticateUser, asyncHandler( async( req, res ) => {
             // if current user is not the owner for the book, send 403 status code
             res.status(403).json({ error: 'You do not own the requested course'});
         }
-
-        
     } catch(error) {
-        // send 400 status and return sequelize's validation error
-        if(error.name === 'SequelizeValidationError') {
+        // check if validation error
+        if(error.name === "SequelizeValidationError") {
+            // send status code 400 and return validation error
             res.status(400).json({ error: error.message });
         } else {
+            // throw error to express's global error handling function
             throw error;
         }
     }

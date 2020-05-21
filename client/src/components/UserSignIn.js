@@ -3,7 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { Consumer } from '../components/context';
 
 function UserSignIn(props) {
-    const [ user, setUser ] = useState({ emailAddress: 'joe@smith.com', password: 'joepassword' });
+    const [ user, setUser ] = useState({ emailAddress: '', password: '' });
     const [ error, setError ] = useState();
     // set from variable to redirect to location from previous route or root URL
     const { from } = props.location.state || { from: { pathname: '/' } }
@@ -28,14 +28,26 @@ function UserSignIn(props) {
                 // call signIn action from context API; set error state if login unsuccessful else redirect to root url
                 const handleSubmit = (event) => {
                     event.preventDefault();
-                    action.signIn(user)
-                        .then( user => {
-                            if( user === null ) {
-                                setError('Sign-In was unsuccessful. Email Address or password does not match.');
-                            } else {
-                                props.history.push(from); // redirect location from 'from' variable
-                            }
-                        });
+
+                    // add validation error if email or password field is empty; else fetch USER from API
+                    if(user.emailAddress === '' && user.password === '') {
+                        return setError('Please enter your Email Address and Password to sign in');
+                    } if(user.emailAddress === '' && user.password !== '') {
+                        return setError('Please enter your Email Address to sign in');
+                    } if(user.emailAddress !== '' && user.password === '') {
+                        return setError('Please enter your Password to sign in');
+                    } else {
+                        // fetch user; set state to validation error if user is not authorized
+                        action.signIn(user)
+                            .then( user => {
+                                if( user === null ) {
+                                    setError('Sign-In was unsuccessful. Email Address or password does not match.');
+                                } else {
+                                    props.history.push(from); // redirect location from 'from' variable
+                                }
+                            });
+                    }
+
                 }
                            
                 return(
